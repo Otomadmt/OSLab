@@ -1,6 +1,7 @@
 // dlllist.h 
 //	Data structures for doublely-linked list. 
-#define STU_NUM 3831
+#ifndef DLLIST_H
+#define DLLIST_H
 
 class DLLElement {
 	public:
@@ -35,3 +36,9 @@ class DLList {
 		DLLElement *first; // head of the list, NULL if empty
 		DLLElement *last; // last element of the list, NULL if empty
 };
+
+// Functions in dllist-driver.cc
+void RandomInsertN(int , DLList*);
+void RemoveN(int , DLList*);
+
+#endif

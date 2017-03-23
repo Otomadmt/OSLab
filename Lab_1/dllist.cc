@@ -93,14 +93,25 @@ DLList::SortedInsert(void *item, int sortKey)
 				break;
 			}
 		}
-		if(nowpos == first) {
+		if(nowpos == last) {
+			if(nowpos->key < sortKey) {
+				newElem->prev = nowpos;
+				nowpos->next = newElem;
+				last = newElem;
+			} else {
+				if (first == nowpos) {
+					first = newElem;
+				} else {
+					nowpos->prev->next = newElem;
+				}
+				newElem->prev = nowpos->prev;
+				newElem->next = nowpos;
+				nowpos->prev = newElem;
+			}
+		} else if(nowpos == first) {
 			newElem->next = nowpos;
 			nowpos->prev = newElem;
 			first = newElem;
-		} else if(nowpos == last) {
-			newElem->prev = nowpos;
-			nowpos->next = newElem;
-			last = newElem;
 		} else {
 			newElem->next = nowpos;
 			newElem->prev = nowpos->prev;
@@ -134,15 +145,17 @@ DLList::SortedRemove(int sortKey)
 		thing = nowpos->item;
 		if(nowpos == first) {
 			first = first->next;
-			first->prev = NULL;
 			if(first == NULL) {
 				last = NULL;
+			} else {
+				first->prev = NULL;
 			}
 		} else if(nowpos == last) {
 			last = last->prev;
-			last->next = NULL;
 			if(last == NULL) {
 				first = NULL;
+			} else {
+				last->next = NULL;
 			}
 		} else {
 			nowpos->prev->next = nowpos->next;
@@ -153,29 +166,4 @@ DLList::SortedRemove(int sortKey)
 	} else {
 		return NULL;
 	}
-}
-
-int
-main() {
-
-	int testNum = 808, out = 0;
-	DLList *dl = new DLList();
-
-	dl->SortedInsert((void*)&testNum, STU_NUM);
-	dl->Prepend((void*)&testNum);
-	dl->Append(NULL);
-	dl->Append(NULL);
-	dl->Append(NULL);
-	dl->Append(NULL);
-	dl->SortedRemove(STU_NUM + 1);
-	dl->SortedRemove(STU_NUM + 4);
-	dl->SortedRemove(STU_NUM - 1);
-	printf("Pop: %d\n", *(int *)dl->Remove(&out));
-	while(dl->IsEmpty()) {
-		printf("\nKey: %d, %d, %d\n", dl->first->key, dl->last->key, testNum);
-		printf("Empty: %d FK: %d\n", dl->IsEmpty(), dl->first->key);
-		dl->Remove(&testNum);
-		printf("Removed: %d\n", testNum);
-	}
-	return 0;
 }
